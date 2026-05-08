@@ -1,94 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caloxy AI | Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <style>
-        :root { --primary: #2ecc71; --dark: #2c3e50; --light: #ecf0f1; }
-        body { font-family: 'Inter', sans-serif; background: var(--light); margin: 0; display: flex; }
-        
-        /* Sidebar */
-        .sidebar { width: 250px; height: 100vh; background: var(--dark); color: white; padding: 20px; position: fixed; }
-        .sidebar h2 { color: var(--primary); text-align: center; }
-        .nav-link { display: block; color: white; padding: 15px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
-        .nav-link:hover, .active { background: var(--primary); }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Caloxy AI Dashboard</title>
 
-        /* Main Content */
-        .main-content { margin-left: 270px; padding: 30px; width: 100%; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        
-        /* Dashboard Cards */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
-        .card h3 { margin: 0; color: #7f8c8d; font-size: 0.9rem; }
-        .card p { font-size: 1.8rem; font-weight: 600; margin: 10px 0; color: var(--dark); }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        /* Upload Section */
-        .upload-box { background: white; padding: 40px; border-radius: 15px; text-align: center; border: 2px dashed var(--primary); margin-top: 30px; }
-        #imagePreview { max-width: 300px; margin-top: 20px; border-radius: 10px; display: none; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-    </style>
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+body{
+    background:#050816;
+    color:white;
+    min-height:100vh;
+    padding:20px;
+    overflow-x:hidden;
+}
+
+/* Background Glow */
+body::before{
+    content:'';
+    position:fixed;
+    width:500px;
+    height:500px;
+    background:radial-gradient(circle,#39ff14 0%,transparent 70%);
+    top:10%;
+    left:20%;
+    opacity:0.12;
+    filter:blur(100px);
+    z-index:-1;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+/* Header */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:700;
+    color:#7CFF5B;
+}
+
+.user{
+    font-size:14px;
+    color:#bbb;
+}
+
+/* Welcome */
+.welcome{
+    margin-bottom:25px;
+}
+
+.welcome p{
+    color:#8f96b2;
+    font-size:13px;
+    letter-spacing:1px;
+    margin-bottom:8px;
+}
+
+.welcome h1{
+    font-size:42px;
+    font-weight:700;
+}
+
+/* Cards */
+.card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.05);
+    border-radius:28px;
+    padding:28px;
+    backdrop-filter:blur(12px);
+    margin-bottom:22px;
+    box-shadow:0 0 30px rgba(0,0,0,0.25);
+}
+
+/* Circle */
+.circle-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.circle{
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    border:12px solid #1b2036;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+
+.circle::before{
+    content:'';
+    position:absolute;
+    inset:-10px;
+    border-radius:50%;
+    border:10px solid #7CFF5B;
+    clip-path: inset(0 50% 0 0);
+}
+
+.circle h2{
+    font-size:48px;
+    font-weight:700;
+}
+
+.circle p{
+    font-size:13px;
+    color:#9aa4c0;
+    text-align:center;
+}
+
+/* Macros */
+.macros h3{
+    margin-bottom:20px;
+}
+
+.macro{
+    margin-bottom:22px;
+}
+
+.macro-top{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.progress{
+    width:100%;
+    height:8px;
+    background:#1a2034;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress span{
+    display:block;
+    width:0%;
+    height:100%;
+    background:#7CFF5B;
+    border-radius:20px;
+}
+
+/* Upload Section */
+.upload-box{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.badge{
+    display:inline-block;
+    background:rgba(124,255,91,0.15);
+    color:#7CFF5B;
+    padding:6px 12px;
+    border-radius:30px;
+    font-size:13px;
+    margin-bottom:15px;
+}
+
+.upload-text h2{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.upload-text p{
+    color:#aab2c5;
+}
+
+.buttons{
+    display:flex;
+    gap:15px;
+}
+
+.btn{
+    border:none;
+    padding:14px 24px;
+    border-radius:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    font-size:15px;
+}
+
+.camera{
+    background:#7CFF5B;
+    color:black;
+}
+
+.upload{
+    background:#111827;
+    color:white;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+/* Empty meals */
+.meals-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.meals-header h2{
+    font-size:28px;
+}
+
+.meals-header span{
+    color:#9ca3af;
+}
+
+.empty{
+    text-align:center;
+    padding:70px 20px;
+    color:#9ca3af;
+}
+
+.empty h3{
+    margin-top:20px;
+    color:white;
+    margin-bottom:10px;
+}
+
+/* Image Preview */
+#imagePreview{
+    width:100%;
+    max-width:320px;
+    border-radius:20px;
+    margin-top:20px;
+    display:none;
+}
+
+/* Responsive */
+@media(max-width:768px){
+
+    .welcome h1{
+        font-size:32px;
+    }
+
+    .circle{
+        width:180px;
+        height:180px;
+    }
+
+    .circle h2{
+        font-size:38px;
+    }
+
+    .upload-box{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .buttons{
+        width:100%;
+    }
+
+    .btn{
+        flex:1;
+    }
+
+    .meals-header h2{
+        font-size:22px;
+    }
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="sidebar">
-    <h2>Caloxy AI</h2>
-    <a href="#" class="nav-link active">Dashboard</a>
-    <a href="#" class="nav-link">Meal History</a>
-    <a href="#" class="nav-link">Settings</a>
-</div>
+<div class="container">
 
-<div class="main-content">
+    <!-- Header -->
     <div class="header">
-        <h1>Welcome Back, Samir!</h1>
-        <div class="date" id="currentDate"></div>
+        <div class="logo">Caloxy</div>
+        <div class="user">user19793</div>
     </div>
 
-    <div class="card-grid">
-        <div class="card"><h3>Daily Goal</h3><p>2,200</p></div>
-        <div class="card"><h3>Consumed</h3><p id="totalKcal">0</p></div>
-        <div class="card"><h3>Remaining</h3><p id="remainingKcal">2,200</p></div>
+    <!-- Welcome -->
+    <div class="welcome">
+        <p>FRIDAY, MAY 8</p>
+        <h1>Hey ak 👋</h1>
     </div>
 
-    <div class="upload-box">
-        <h3>AI Food Recognition</h3>
-        <p>Snap a photo to analyze calories instantly</p>
-        <input type="file" id="fileInput" accept="image/*" hidden>
-        <button class="btn" onclick="document.getElementById('fileInput').click()">Choose Image</button>
-        <center><img id="imagePreview" src=""></center>
-        <br>
-        <button id="analyzeBtn" class="btn" style="display:none;" onclick="uploadImage()">Analyze Now</button>
+    <!-- Calories Circle -->
+    <div class="card">
+        <div class="circle-wrapper">
+            <div class="circle">
+                <div>
+                    <h2 id="totalKcal">0</h2>
+                    <p>OF 2000 KCAL</p>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Macros -->
+    <div class="card macros">
+
+        <h3>Today's macros</h3>
+
+        <div class="macro">
+            <div class="macro-top">
+                <span>PROTEIN</span>
+                <span>0 / 140g</span>
+            </div>
+            <div class="progress">
+                <span style="width:0%"></span>
+            </div>
+        </div>
+
+        <div class="macro">
+            <div class="macro-top">
+                <span>CARBS</span>
+                <span>0 / 220g</span>
+            </div>
+            <div class="progress">
+                <span style="width:0%"></span>
+            </div>
+        </div>
+
+        <div class="macro">
+            <div class="macro-top">
+                <span>FAT</span>
+                <span>0 / 70g</span>
+            </div>
+            <div class="progress">
+                <span style="width:0%"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Upload -->
+    <div class="card upload-box">
+
+        <div class="upload-text">
+            <div class="badge">⚡ AI Nutrition Scan</div>
+            <h2>Log your next meal</h2>
+            <p>Snap or upload a photo. Get instant macros & health score.</p>
+        </div>
+
+        <div class="buttons">
+
+            <input type="file" id="fileInput" accept="image/*" hidden>
+
+            <button class="btn camera" onclick="document.getElementById('fileInput').click()">
+                📷 Camera
+            </button>
+
+            <button class="btn upload" id="analyzeBtn" style="display:none;" onclick="uploadImage()">
+                ⬆ Upload
+            </button>
+
+        </div>
+
+        <img id="imagePreview" src="">
+
+    </div>
+
+    <!-- Meals -->
+    <div class="meals-header">
+        <h2>Today's meals</h2>
+        <span>0 logged</span>
+    </div>
+
+    <div class="card empty">
+        <div style="font-size:40px;">🔥</div>
+        <h3>No meals logged today</h3>
+        <p>Snap your first meal to start tracking.</p>
+    </div>
+
 </div>
 
 <script>
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString();
-    const fileInput = document.getElementById('fileInput');
-    const imagePreview = document.getElementById('imagePreview');
-    const analyzeBtn = document.getElementById('analyzeBtn');
 
-    fileInput.onchange = () => {
-        const [file] = fileInput.files;
-        if (file) {
-            imagePreview.src = URL.createObjectURL(file);
-            imagePreview.style.display = 'block';
-            analyzeBtn.style.display = 'inline-block';
-        }
+const fileInput = document.getElementById('fileInput');
+const imagePreview = document.getElementById('imagePreview');
+const analyzeBtn = document.getElementById('analyzeBtn');
+
+fileInput.onchange = () => {
+
+    const [file] = fileInput.files;
+
+    if(file){
+
+        imagePreview.src = URL.createObjectURL(file);
+
+        imagePreview.style.display = 'block';
+
+        analyzeBtn.style.display = 'inline-block';
     }
+};
 
-    async function uploadImage() {
-        const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
-        
-        const response = await fetch('/upload', { method: 'POST', body: formData });
+async function uploadImage(){
+
+    const formData = new FormData();
+
+    formData.append('file', fileInput.files[0]);
+
+    try{
+
+        const response = await fetch('/upload', {
+            method:'POST',
+            body:formData
+        });
+
         const data = await response.json();
-        
-        alert("Detected: " + data.name + " (" + data.kcal + " kcal)");
-        location.reload(); // Refresh to update cards from database
+
+        alert(
+            "Detected: " +
+            data.name +
+            " (" +
+            data.kcal +
+            " kcal)"
+        );
+
+        document.getElementById('totalKcal').innerText = data.kcal;
+
+    }catch(error){
+
+        alert("Upload failed");
     }
+}
+
 </script>
+
 </body>
 </html>
